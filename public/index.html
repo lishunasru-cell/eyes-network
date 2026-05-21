@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГЛАЗА — POV Network</title>
+<style>
+  :root {
+    --bg:      #03050c;
+    --bg1:     #060b14;
+    --bg2:     #080e18;
+    --border:  rgba(59,130,246,.12);
+    --blue:    #3b82f6;
+    --cyan:    #06b6d4;
+    --green:   #10b981;
+    --purple:  #a855f7;
+    --orange:  #f97316;
+    --red:     #ef4444;
+    --yellow:  #eab308;
+    --text:    #e2e8f0;
+    --muted:   #64748b;
+    --faint:   #1e2a3a;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Mono','Fira Code','Cascadia Code',Consolas,'Courier New',monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,.035) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  /* ── TOPBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 52px;
+    background: rgba(3,5,12,.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-size: 13px; font-weight: 600; letter-spacing: .18em;
+    color: var(--blue); text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 8px var(--blue);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 12px;
+    letter-spacing: .06em; text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-status {
+    font-size: 11px; letter-spacing: .04em; color: var(--green);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .status-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 80px 24px 64px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; flex: 0 0 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  }
+  .hero-h1 {
+    font-size: clamp(52px, 9vw, 96px);
+    font-weight: 700; letter-spacing: -.02em;
+    line-height: 1; margin-bottom: 24px;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,.7) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glitch 6s ease-in-out infinite;
+  }
+  .hero-sub {
+    max-width: 540px; color: var(--muted);
+    font-size: 15px; line-height: 1.8; margin-bottom: 52px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .hero-sub em { font-style: normal; color: var(--text); }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 72px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 22px; border-radius: 4px;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+    cursor: pointer; transition: all .2s; border: none;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--blue); color: #fff;
+    box-shadow: 0 0 24px rgba(59,130,246,.35);
+  }
+  .btn-primary:hover {
+    background: #2563eb;
+    box-shadow: 0 0 36px rgba(59,130,246,.55);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+
+  .hero-stats {
+    display: flex; gap: 48px; justify-content: center;
+    padding: 24px 40px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(6,11,20,.6);
+    backdrop-filter: blur(8px);
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-val {
+    font-size: 28px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--blue); display: block;
+  }
+  .stat-lbl { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 96px 32px;
+  }
+  .section-label {
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; max-width: 60px; height: 1px;
+    background: var(--blue); opacity: .4;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 42px); font-weight: 700;
+    letter-spacing: -.02em; line-height: 1.15;
+    margin-bottom: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .section-desc {
+    color: var(--muted); font-size: 15px; line-height: 1.8;
+    max-width: 560px; margin-bottom: 52px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ── STEPS ── */
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden;
+  }
+  .step {
+    background: var(--bg1); padding: 36px 28px;
+    transition: background .2s;
+    cursor: default;
+  }
+  .step:hover { background: var(--bg2); }
+  .step-num {
+    font-size: 11px; letter-spacing: .18em; color: var(--blue);
+    margin-bottom: 20px; opacity: .6;
+  }
+  .step-icon {
+    font-size: 22px; margin-bottom: 16px; display: block;
+    line-height: 1;
+  }
+  .step-title {
+    font-size: 16px; font-weight: 600; letter-spacing: -.01em;
+    margin-bottom: 10px; color: var(--text);
+  }
+  .step-text {
+    font-size: 13px; color: var(--muted); line-height: 1.7;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .step-connector {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blue); font-size: 16px; opacity: .4;
+  }
+
+  /* ── DEMO ── */
+  .demo-wrap {
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg1); overflow: hidden;
+  }
+  .demo-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; letter-spacing: .06em;
+  }
+  .demo-header h3 { color: var(--muted); font-weight: 400; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; letter-spacing: .1em; color: var(--green);
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 6px var(--green);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .split-screen { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+  .eye-stream { position: relative; aspect-ratio: 16/9; overflow: hidden; }
+  .cam-bg { width: 100%; height: 100%; background: #000; }
+  .cam-canvas { display: block; width: 100%; height: 100%; }
+  .stream-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 14px;
+    background: linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 40%, transparent 60%, rgba(0,0,0,.6) 100%);
+    pointer-events: none;
+  }
+  .stream-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; letter-spacing: .12em;
+  }
+  .stream-info { }
+  .stream-info strong { display: block; font-size: 12px; margin-bottom: 2px; }
+  .stream-info span { font-size: 11px; color: rgba(255,255,255,.65); display: block; margin-bottom: 4px; }
+  .viewers { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,.5); }
+
+  .ai-bar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,.3);
+  }
+  .ai-indicator { position: relative; flex-shrink: 0; width: 28px; height: 28px; }
+  .ai-ring {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid var(--blue);
+    border-top-color: transparent;
+    animation: spin 1.2s linear infinite;
+  }
+  .ai-ring::after {
+    content: ''; position: absolute;
+    inset: 4px; border-radius: 50%;
+    background: var(--blue); opacity: .25;
+  }
+  .ai-content { flex: 1; min-width: 0; }
+  .ai-label { font-size: 10px; letter-spacing: .1em; color: var(--blue); margin-bottom: 6px; text-transform: uppercase; }
+  .ai-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ai-tag {
+    padding: 2px 8px; border-radius: 2px;
+    font-size: 10px; letter-spacing: .06em;
+    background: rgba(255,255,255,.04); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .ai-tag.match { border-color: rgba(16,185,129,.4); color: var(--green); background: rgba(16,185,129,.06); }
+  .ai-match-score { text-align: center; flex-shrink: 0; }
+  .match-pct { font-size: 28px; font-weight: 700; color: var(--green); letter-spacing: -.02em; line-height: 1; }
+  .match-lbl { font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+  .demo-footer {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-top: 1px solid var(--border);
+  }
+  .btn-lbl { font-size: 11px; color: var(--muted); letter-spacing: .06em; margin-left: auto; }
+
+  /* ── NETWORK MAP ── */
+  .network-wrap {
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg1); overflow: hidden;
+  }
+  .live-map {
+    position: relative; width: 100%;
+    height: clamp(340px, 45vw, 520px);
+    overflow: hidden;
+  }
+  .globe-bg {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(460px, 88%); height: min(460px, 88%);
+    opacity: .18; pointer-events: none;
+  }
+  .lm-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .lm-line { opacity: .55; }
+  @keyframes lmDash { to { stroke-dashoffset: -80; } }
+
+  .map-node {
+    position: absolute; display: flex; align-items: center; gap: 6px;
+    cursor: default;
+  }
+  .map-node.mn-rev { flex-direction: row-reverse; }
+  .mn-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .mn-info {
+    display: flex; flex-direction: column; gap: 1px;
+    opacity: 0; transition: opacity .2s;
+    pointer-events: none;
+  }
+  .map-node:hover .mn-info { opacity: 1; }
+  .mn-city { font-size: 9px; color: rgba(255,255,255,.5); letter-spacing: .06em; }
+  .mn-act { font-size: 9px; font-weight: 600; letter-spacing: .06em; }
+
+  .network-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border-top: 1px solid var(--border);
+  }
+  .net-stat {
+    padding: 20px; text-align: center;
+    background: var(--bg1);
+  }
+  .net-stat-val { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+  .net-stat-lbl { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 3px; }
+
+  /* ── VIBESTREAM ── */
+  .vb-concept { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .vb-lead {
+    font-size: 18px; line-height: 1.9; color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 300;
+    padding: 36px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg1);
+    margin-bottom: 24px;
+  }
+  .vb-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .vb-pillar {
+    padding: 20px; border: 1px solid var(--border); border-radius: 4px;
+    background: var(--bg1); transition: background .2s;
+  }
+  .vb-pillar:hover { background: var(--bg2); }
+  .vb-pillar-icon { font-size: 20px; margin-bottom: 10px; }
+  .vb-pillar-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .vb-pillar-text {
+    font-size: 12px; color: var(--muted); line-height: 1.65;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .vb-child-block {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .vb-child-quote {
+    padding: 28px 28px 28px 36px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg1);
+    position: relative;
+  }
+  .vb-qmark {
+    position: absolute; top: 10px; left: 16px;
+    font-size: 52px; line-height: 1; color: var(--blue);
+    opacity: .3; font-family: Georgia, serif;
+  }
+  .vb-child-quote p {
+    font-size: 15px; line-height: 1.8; color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 300; font-style: italic;
+  }
+  .vb-child-why {
+    padding: 24px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg1);
+  }
+  .vb-why-label {
+    font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 16px;
+  }
+  .vb-why-grid { display: flex; flex-direction: column; gap: 10px; }
+  .vb-why-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: var(--muted); line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .vb-why-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px 32px; text-align: center;
+  }
+  .footer-classified {
+    font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .footer-text {
+    font-size: 12px; color: var(--muted); line-height: 1.8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .footer-text a { color: var(--blue); text-decoration: none; }
+  .footer-text a:hover { text-decoration: underline; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .4; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes glitch {
+    0%, 90%, 100% { transform: none; filter: none; }
+    91% { transform: translateX(-2px) skew(-1deg); filter: blur(.4px); }
+    92% { transform: translateX(2px) skew(1deg); filter: none; }
+    93% { transform: translateX(-1px); }
+    94% { transform: none; }
+    95% { transform: translateX(1px); filter: blur(.2px); }
+    96% { transform: none; filter: none; }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .vb-concept { grid-template-columns: 1fr; }
+    .network-stats { grid-template-columns: 1fr 1fr; }
+    .split-screen { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 28px; }
+  }
+  @media (max-width: 480px) {
+    .steps-grid { grid-template-columns: 1fr; }
+    .vb-pillars { grid-template-columns: 1fr; }
+    .step-connector { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    ГЛАЗА / EYES NETWORK
+  </div>
+  <div class="nav-links">
+    <a href="#how">Как это работает</a>
+    <a href="#demo">Демо</a>
+    <a href="#network">Сеть</a>
+    <a href="#vibestream">Вайбпоток</a>
+  </div>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    <span id="onlineCount">12,847</span> онлайн
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-eyebrow">POV Streaming Network — Прямой эфир</div>
+  <h1 class="hero-h1">ГЛАЗА</h1>
+  <p class="hero-sub">
+    Направь камеру. <em>ИИ находит тех, кто делает то же самое</em>
+    прямо сейчас — в любой точке планеты.
+    Слияние перспектив в реальном времени.
+  </p>
+  <div class="hero-cta">
+    <a href="/stream" class="btn btn-primary">→ Запустить ГЛАЗА</a>
+    <a href="#how" class="btn btn-ghost">Как это работает</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-val"><span class="counter" data-target="12847">0</span></span>
+      <span class="stat-lbl">Глаз онлайн</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val"><span class="counter" data-target="3421">0</span></span>
+      <span class="stat-lbl">Активных пар</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val"><span class="counter" data-target="94">0</span>%</span>
+      <span class="stat-lbl">Точность мэтча</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val"><span class="counter" data-target="38">0</span></span>
+      <span class="stat-lbl">Стран</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="section" id="how">
+  <div class="section-label">Принцип работы</div>
+  <h2 class="section-title">От точки к совпадению</h2>
+  <p class="section-desc">Четыре шага от включённой камеры до слияния с похожим человеком по всему миру.</p>
+
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <span class="step-icon">📍</span>
+      <div class="step-title">Точка отсчёта</div>
+      <p class="step-text">Ты включаешь камеру. Поток уходит в сеть — живой, без фильтров. Твой POV становится узлом.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <span class="step-icon">⊕</span>
+      <div class="step-title">Слияние</div>
+      <p class="step-text">Система находит второй поток с пересекающимся контекстом. Два взгляда объединяются в одном экране.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <span class="step-icon">◎</span>
+      <div class="step-title">ИИ-анализ</div>
+      <p class="step-text">30 fps. Объекты, действия, атмосфера, локация — всё превращается в вектор за миллисекунды.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <span class="step-icon">✦</span>
+      <div class="step-title">Мэтчинг</div>
+      <p class="step-text">Косинусное сходство эмбеддингов. Если счёт выше порога — зрители двух потоков видят друг друга.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── DEMO ── -->
+<section class="section" id="demo">
+  <div class="section-label">Интерактивная модель</div>
+  <h2 class="section-title">Слияние глаз — live</h2>
+  <p class="section-desc">Нажми «Следующий» — ИИ мгновенно пересчитывает мэтч для нового сценария.</p>
+
+  <div class="demo-wrap">
+    <div class="demo-header">
+      <h3>Eyes Network · 40 сценариев слияния</h3>
+      <div class="live-badge"><div class="live-dot"></div> LIVE · 2 ГЛАЗА СЛИТЫ</div>
+    </div>
+
+    <div class="split-screen">
+      <div class="eye-stream">
+        <div class="cam-bg" id="cam1"><canvas id="cam1-canvas" class="cam-canvas"></canvas></div>
+        <div class="stream-overlay">
+          <div class="stream-badge" style="color:#ef4444;"><div class="live-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></div> ГЛАЗА 1</div>
+          <div class="stream-info">
+            <strong id="u1-name">@артем_к · Москва</strong>
+            <span id="ctx1-label">Кофе и чтение · Кафе</span>
+            <div class="viewers">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <span id="v1-count">247 зрителей</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="eye-stream">
+        <div class="cam-bg" id="cam2"><canvas id="cam2-canvas" class="cam-canvas"></canvas></div>
+        <div class="stream-overlay">
+          <div class="stream-badge" style="color:#10b981;">✓ ГЛАЗА 2 · СЛИТЫ</div>
+          <div class="stream-info">
+            <strong id="u2-name">@макс_инвест · Берлин</strong>
+            <span id="ctx2-label">Кофе и работа · Ноутбук</span>
+            <div class="viewers">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <span id="v2-count">189 зрителей</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-bar">
+      <div class="ai-indicator"><div class="ai-ring"></div></div>
+      <div class="ai-content">
+        <div class="ai-label">Eyes-AI · Анализ потоков</div>
+        <div class="ai-tags" id="aiTags">
+          <span class="ai-tag">Контекст: Кофе</span>
+          <span class="ai-tag match">✓ Напиток</span>
+          <span class="ai-tag">Атмосфера: Концентрация</span>
+          <span class="ai-tag match">✓ Работа/Учёба</span>
+          <span class="ai-tag">Локация: Закрытое пространство</span>
+        </div>
+      </div>
+      <div class="ai-match-score">
+        <div class="match-pct" id="matchPct">91%</div>
+        <div class="match-lbl">Совпадение</div>
+      </div>
+    </div>
+
+    <div class="demo-footer">
+      <button class="btn btn-primary" onclick="nextContext()">→ Следующий</button>
+      <button class="btn btn-ghost" onclick="resetDemo()">↺ Сброс</button>
+      <span class="btn-lbl" id="contextLbl">1 / 40  ·  Кофе / Работа</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── NETWORK ── -->
+<section class="section" id="network">
+  <div class="section-label">Глобальная сеть</div>
+  <h2 class="section-title">Активные точки прямо сейчас</h2>
+  <p class="section-desc">Каждая точка — живой поток. Цвет — контекст, определённый ИИ. Наведи для деталей.</p>
+
+  <div class="network-wrap">
+    <div class="live-map">
+      <svg class="globe-bg" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="90" stroke="#3b82f6" stroke-width=".6" stroke-dasharray="4 4"/>
+        <ellipse cx="100" cy="100" rx="50" ry="90" stroke="#3b82f6" stroke-width=".6" stroke-dasharray="3 6"/>
+        <ellipse cx="100" cy="100" rx="90" ry="35" stroke="#3b82f6" stroke-width=".6" stroke-dasharray="3 6"/>
+        <ellipse cx="100" cy="100" rx="75" ry="90" stroke="#3b82f6" stroke-width=".4" stroke-dasharray="2 8" opacity=".6"/>
+        <ellipse cx="100" cy="100" rx="90" ry="60" stroke="#3b82f6" stroke-width=".4" stroke-dasharray="2 8" opacity=".6"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#3b82f6" stroke-width=".5" stroke-dasharray="3 6"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#3b82f6" stroke-width=".5" stroke-dasharray="3 6"/>
+      </svg>
+      <svg class="lm-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <line x1="0" y1="25" x2="100" y2="25" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line x1="0" y1="50" x2="100" y2="50" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line x1="0" y1="75" x2="100" y2="75" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line x1="25" y1="0" x2="25" y2="100" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line x1="50" y1="0" x2="50" y2="100" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line x1="75" y1="0" x2="75" y2="100" stroke="#3b82f6" stroke-width=".08" opacity=".4"/>
+        <line class="lm-line" x1="4" y1="6" x2="74" y2="7" stroke="#3b82f6" stroke-dasharray="3 7" style="animation:lmDash 2.2s linear infinite;"/>
+        <line class="lm-line" x1="20" y1="10" x2="71" y2="50" stroke="#3b82f6" stroke-dasharray="3 9" style="animation:lmDash 3.1s linear infinite;animation-delay:.4s;"/>
+        <line class="lm-line" x1="56" y1="12" x2="37" y2="46" stroke="#a855f7" stroke-dasharray="3 7" style="animation:lmDash 2.8s linear infinite;animation-delay:.9s;"/>
+        <line class="lm-line" x1="8" y1="26" x2="19" y2="54" stroke="#f97316" stroke-dasharray="3 8" style="animation:lmDash 2.5s linear infinite;animation-delay:1.3s;"/>
+        <line class="lm-line" x1="62" y1="35" x2="5" y2="85" stroke="#06b6d4" stroke-dasharray="4 8" style="animation:lmDash 3.4s linear infinite;animation-delay:.6s;"/>
+        <line class="lm-line" x1="25" y1="32" x2="58" y2="83" stroke="#10b981" stroke-dasharray="3 7" style="animation:lmDash 2.9s linear infinite;animation-delay:1.7s;"/>
+        <line class="lm-line" x1="28" y1="72" x2="74" y2="88" stroke="#3b82f6" stroke-dasharray="3 8" style="animation:lmDash 2.6s linear infinite;animation-delay:.2s;"/>
+        <line class="lm-line" x1="38" y1="5" x2="15" y2="42" stroke="#eab308" stroke-dasharray="3 9" style="animation:lmDash 3.0s linear infinite;animation-delay:1.1s;"/>
+      </svg>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(59,130,246,.05) 0%,transparent 65%);pointer-events:none;"></div>
+
+      <!-- Row 1 -->
+      <div class="map-node" style="top:6%;left:4%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:0s;"></div><div class="mn-info"><span class="mn-city">МСК · 02:40</span><span class="mn-act" style="color:#3b82f6;">ВАЙБКОДИНГ</span></div></div>
+      <div class="map-node" style="top:10%;left:20%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:.7s;"></div><div class="mn-info"><span class="mn-city">МСК · 01:47</span><span class="mn-act" style="color:#3b82f6;">ДЕПЛОЙ В ПРОД</span></div></div>
+      <div class="map-node" style="top:5%;left:39%;"><div class="mn-dot" style="background:#06b6d4;box-shadow:0 0 7px #06b6d4;animation-delay:1.4s;"></div><div class="mn-info"><span class="mn-city">ЛДН · 03:12</span><span class="mn-act" style="color:#06b6d4;">ДОЖДЬ · ОКНО</span></div></div>
+      <div class="map-node" style="top:12%;left:57%;"><div class="mn-dot" style="background:#a855f7;box-shadow:0 0 7px #a855f7;animation-delay:.3s;"></div><div class="mn-info"><span class="mn-city">БЕР · 01:08</span><span class="mn-act" style="color:#a855f7;">DJ-СЕТ · TECHNO</span></div></div>
+      <div class="map-node mn-rev" style="top:7%;left:74%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:1.1s;"></div><div class="mn-info"><span class="mn-city">ТКО · 09:41</span><span class="mn-act" style="color:#3b82f6;">CURSOR AI</span></div></div>
+      <div class="map-node mn-rev" style="top:16%;left:90%;"><div class="mn-dot" style="background:#10b981;box-shadow:0 0 7px #10b981;animation-delay:1.8s;"></div><div class="mn-info"><span class="mn-city">ВАН · 22:15</span><span class="mn-act" style="color:#10b981;">ХАЙКИНГ · ЛЕС</span></div></div>
+      <!-- Row 2 -->
+      <div class="map-node" style="top:26%;left:8%;"><div class="mn-dot" style="background:#f97316;box-shadow:0 0 7px #f97316;animation-delay:.5s;"></div><div class="mn-info"><span class="mn-city">РМ · 20:30</span><span class="mn-act" style="color:#f97316;">ПАСТА · КУХНЯ</span></div></div>
+      <div class="map-node" style="top:31%;left:25%;"><div class="mn-dot" style="background:#10b981;box-shadow:0 0 7px #10b981;animation-delay:1.2s;"></div><div class="mn-info"><span class="mn-city">ЕКБ · 03:55</span><span class="mn-act" style="color:#10b981;">ГОРЫ · МАРШРУТ</span></div></div>
+      <div class="map-node" style="top:23%;left:43%;"><div class="mn-dot" style="background:#eab308;box-shadow:0 0 7px #eab308;animation-delay:2.1s;"></div><div class="mn-info"><span class="mn-city">МСК · 23:12</span><span class="mn-act" style="color:#eab308;">ЧТЕНИЕ · КАФЕ</span></div></div>
+      <div class="map-node" style="top:36%;left:61%;"><div class="mn-dot" style="background:#06b6d4;box-shadow:0 0 7px #06b6d4;animation-delay:.9s;"></div><div class="mn-info"><span class="mn-city">БЛИ · 14:20</span><span class="mn-act" style="color:#06b6d4;">СЕРФИНГ · ВОЛНЫ</span></div></div>
+      <div class="map-node mn-rev" style="top:24%;left:80%;"><div class="mn-dot" style="background:#eab308;box-shadow:0 0 7px #eab308;animation-delay:1.6s;"></div><div class="mn-info"><span class="mn-city">ПРГ · 23:45</span><span class="mn-act" style="color:#eab308;">ВИНИЛОВЫЕ</span></div></div>
+      <div class="map-node mn-rev" style="top:38%;left:91%;"><div class="mn-dot" style="background:#ef4444;box-shadow:0 0 7px #ef4444;animation-delay:.4s;"></div><div class="mn-info"><span class="mn-city">ШМН · 15:40</span><span class="mn-act" style="color:#ef4444;">ЛЫЖИ · 3000М</span></div></div>
+      <!-- Row 3 -->
+      <div class="map-node" style="top:48%;left:3%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:1.9s;"></div><div class="mn-info"><span class="mn-city">СФ · 17:22</span><span class="mn-act" style="color:#3b82f6;">GITHUB · PR OPEN</span></div></div>
+      <div class="map-node" style="top:54%;left:19%;"><div class="mn-dot" style="background:#f97316;box-shadow:0 0 7px #f97316;animation-delay:.8s;"></div><div class="mn-info"><span class="mn-city">БНК · 22:50</span><span class="mn-act" style="color:#f97316;">НОЧНОЙ РЫНОК</span></div></div>
+      <div class="map-node" style="top:46%;left:37%;"><div class="mn-dot" style="background:#a855f7;box-shadow:0 0 7px #a855f7;animation-delay:1.3s;"></div><div class="mn-info"><span class="mn-city">АМС · 01:17</span><span class="mn-act" style="color:#a855f7;">VINYL · HOUSE</span></div></div>
+      <div class="map-node" style="top:57%;left:54%;"><div class="mn-dot" style="background:#10b981;box-shadow:0 0 7px #10b981;animation-delay:.2s;"></div><div class="mn-info"><span class="mn-city">АЛТ · 05:00</span><span class="mn-act" style="color:#10b981;">КЕМПИНГ · КОСТЁР</span></div></div>
+      <div class="map-node mn-rev" style="top:50%;left:71%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:1.0s;"></div><div class="mn-info"><span class="mn-city">ЛДН · 00:55</span><span class="mn-act" style="color:#3b82f6;">PANIC · DEPLOY</span></div></div>
+      <div class="map-node mn-rev" style="top:60%;left:89%;"><div class="mn-dot" style="background:#06b6d4;box-shadow:0 0 7px #06b6d4;animation-delay:2.3s;"></div><div class="mn-info"><span class="mn-city">МАЛ · 11:30</span><span class="mn-act" style="color:#06b6d4;">ПЛЯЖ · МАЛЬДИВЫ</span></div></div>
+      <!-- Row 4 -->
+      <div class="map-node" style="top:66%;left:10%;"><div class="mn-dot" style="background:#f97316;box-shadow:0 0 7px #f97316;animation-delay:1.5s;"></div><div class="mn-info"><span class="mn-city">СТМ · 21:40</span><span class="mn-act" style="color:#f97316;">БАЗАР · СПЕЦИИ</span></div></div>
+      <div class="map-node" style="top:72%;left:28%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:.6s;"></div><div class="mn-info"><span class="mn-city">МСК · 03:01</span><span class="mn-act" style="color:#3b82f6;">ХАКАТОН · Ч.20</span></div></div>
+      <div class="map-node" style="top:68%;left:46%;"><div class="mn-dot" style="background:#ef4444;box-shadow:0 0 7px #ef4444;animation-delay:1.9s;"></div><div class="mn-info"><span class="mn-city">СЧ · 13:15</span><span class="mn-act" style="color:#ef4444;">ЛЫЖИ · ПОРОШОК</span></div></div>
+      <div class="map-node" style="top:76%;left:64%;"><div class="mn-dot" style="background:#10b981;box-shadow:0 0 7px #10b981;animation-delay:2.5s;"></div><div class="mn-info"><span class="mn-city">НРВ · 05:10</span><span class="mn-act" style="color:#10b981;">РЫБАЛКА · ФЬОРД</span></div></div>
+      <div class="map-node mn-rev" style="top:63%;left:80%;"><div class="mn-dot" style="background:#eab308;box-shadow:0 0 7px #eab308;animation-delay:1.1s;"></div><div class="mn-info"><span class="mn-city">МСК · 04:00</span><span class="mn-act" style="color:#eab308;">REDDIT · НОЧЬ</span></div></div>
+      <!-- Row 5 -->
+      <div class="map-node" style="top:85%;left:5%;"><div class="mn-dot" style="background:#06b6d4;box-shadow:0 0 7px #06b6d4;animation-delay:.3s;"></div><div class="mn-info"><span class="mn-city">ГВЙ · 08:30</span><span class="mn-act" style="color:#06b6d4;">СЕРФИНГ · PIPELINE</span></div></div>
+      <div class="map-node" style="top:82%;left:23%;"><div class="mn-dot" style="background:#f97316;box-shadow:0 0 7px #f97316;animation-delay:1.7s;"></div><div class="mn-info"><span class="mn-city">ДАЧ · 12:00</span><span class="mn-act" style="color:#f97316;">МАНГАЛ · ГРИЛЬ</span></div></div>
+      <div class="map-node" style="top:90%;left:40%;"><div class="mn-dot" style="background:#a855f7;box-shadow:0 0 7px #a855f7;animation-delay:.8s;"></div><div class="mn-info"><span class="mn-city">МСК · 22:30</span><span class="mn-act" style="color:#a855f7;">РОК-КОНЦЕРТ</span></div></div>
+      <div class="map-node" style="top:83%;left:57%;"><div class="mn-dot" style="background:#10b981;box-shadow:0 0 7px #10b981;animation-delay:2.0s;"></div><div class="mn-info"><span class="mn-city">АТК · 02:00</span><span class="mn-act" style="color:#10b981;">МЛЕЧНЫЙ ПУТЬ</span></div></div>
+      <div class="map-node mn-rev" style="top:88%;left:74%;"><div class="mn-dot" style="background:#3b82f6;box-shadow:0 0 7px #3b82f6;animation-delay:1.4s;"></div><div class="mn-info"><span class="mn-city">ТКО · 10:05</span><span class="mn-act" style="color:#3b82f6;">CURSOR+CLAUDE</span></div></div>
+      <div class="map-node mn-rev" style="top:80%;left:90%;"><div class="mn-dot" style="background:#ef4444;box-shadow:0 0 7px #ef4444;animation-delay:.5s;"></div><div class="mn-info"><span class="mn-city">КРМ · 14:20</span><span class="mn-act" style="color:#ef4444;">СКАЛОЛАЗАНИЕ</span></div></div>
+    </div>
+
+    <div class="network-stats">
+      <div class="net-stat">
+        <div class="net-stat-val" style="color:var(--blue)">12,847</div>
+        <div class="net-stat-lbl">Глаз онлайн</div>
+      </div>
+      <div class="net-stat">
+        <div class="net-stat-val" style="color:var(--green)">3,421</div>
+        <div class="net-stat-lbl">Активных пар</div>
+      </div>
+      <div class="net-stat">
+        <div class="net-stat-val" style="color:var(--cyan)">38</div>
+        <div class="net-stat-lbl">Стран</div>
+      </div>
+      <div class="net-stat">
+        <div class="net-stat-val" style="color:var(--purple)">1.2с</div>
+        <div class="net-stat-lbl">Avg задержка</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── VIBESTREAM ── -->
+<section class="section" id="vibestream">
+  <div class="section-label">Следующий уровень</div>
+  <h2 class="section-title">Вайбпоток — коллективный разум</h2>
+  <p class="section-desc">Каждый человек — это поток. Потоки можно соединить.</p>
+
+  <div class="vb-concept">
+    <div>
+      <div class="vb-lead">
+        У тебя вопрос. Ты открываешь поток.<br>
+        Кто-то подключается — анонимно, мгновенно.<br>
+        Видит твой контекст. Думает вместе с тобой.<br>
+        Ты остаёшься капитаном. Они — соавторы.<br>
+        Если помогли — благодаришь донатом.
+      </div>
+      <div class="vb-pillars">
+        <div class="vb-pillar">
+          <div class="vb-pillar-icon" style="color:var(--blue);">⟳</div>
+          <div class="vb-pillar-title">Реальное время</div>
+          <p class="vb-pillar-text">Не форум, не чат. Живой поток мышления прямо сейчас, пока вопрос горит.</p>
+        </div>
+        <div class="vb-pillar">
+          <div class="vb-pillar-icon" style="color:var(--purple);">◎</div>
+          <div class="vb-pillar-title">Полная анонимность</div>
+          <p class="vb-pillar-text">Без имён, без репутации, без страха ошибиться. Только поток и доверие.</p>
+        </div>
+        <div class="vb-pillar">
+          <div class="vb-pillar-icon" style="color:var(--green);">⌖</div>
+          <div class="vb-pillar-title">Контроль у хоста</div>
+          <p class="vb-pillar-text">Подключившийся видит — но не управляет. Финальное слово всегда за тобой.</p>
+        </div>
+        <div class="vb-pillar">
+          <div class="vb-pillar-icon" style="color:var(--orange);">◈</div>
+          <div class="vb-pillar-title">Благодарность донатом</div>
+          <p class="vb-pillar-text">Никакой обязаловки. Помогло — отблагодари. Не помогло — просто отключись.</p>
+        </div>
+      </div>
+    </div>
+    <div class="vb-child-block">
+      <div class="vb-child-quote">
+        <div class="vb-qmark">"</div>
+        <p>Обычный несмышлёный ребёнок может ТАКОЕ увидеть в чужом вайбпотоке и предложить ТАКИЕ решения, что это окажется сильнее любого профессората.</p>
+      </div>
+      <div class="vb-child-why">
+        <div class="vb-why-label">Почему так происходит</div>
+        <div class="vb-why-grid">
+          <div class="vb-why-item"><span class="vb-why-icon">👁</span><span>Ребёнок не знает, что «так не бывает» — и именно поэтому видит то, что бывает</span></div>
+          <div class="vb-why-item"><span class="vb-why-icon">🧠</span><span>Профессионал видит проблему сквозь призму фреймворков. Ребёнок — напрямую</span></div>
+          <div class="vb-why-item"><span class="vb-why-icon">⚡</span><span>Незамутнённый взгляд — это не слабость. Это сверхспособность, которую мы теряем с опытом</span></div>
+          <div class="vb-why-item"><span class="vb-why-icon">∞</span><span>Вайбпоток уравнивает всех. Здесь нет степеней — есть только качество мысли в моменте</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-classified">🔒 Строго конфиденциально</div>
+  <div class="footer-text">
+    Концепция защищена законодательством о защите интеллектуальных прав.<br>
+    По всем вопросам коллаборации — Telegram: <a href="https://t.me/osarassela" target="_blank">@osarassela</a>
+  </div>
+</footer>
+
+<script>
+/* ── COUNTER ── */
+function animateCounter(el, target, duration) {
+  const step = Math.ceil(target / (duration / 16));
+  let n = 0;
+  const t = setInterval(() => {
+    n = Math.min(n + step, target);
+    el.textContent = n.toLocaleString('ru-RU');
+    if (n >= target) clearInterval(t);
+  }, 16);
+}
+document.querySelectorAll('.counter').forEach(el =>
+  animateCounter(el, parseInt(el.dataset.target), 1400)
+);
+
+/* ── CANVAS ENGINE ── */
+const CS = {
+  cam1: {type:'particles', params:{}, t:0, particles:[], lines:[], streaks:[], waves:[], shown:[], lineIdx:0, charIdx:0, nextChar:0},
+  cam2: {type:'particles', params:{}, t:0, particles:[], lines:[], streaks:[], waves:[], shown:[], lineIdx:0, charIdx:0, nextChar:0},
+};
+
+const TERM = {
+  vibe:[
+    '> claude проверь auth middleware',
+    'claude > смотрю... нашёл проблему',
+    'claude > добавляю type guard:',
+    'if (!isUser(req.user)) return 401;',
+    '✓ применено. запускаю тесты...',
+    'Tests: 23 passed ✓',
+    '> класс, теперь мэтчинг алгоритм',
+    'claude > пишу embeddings pipeline...',
+    'async function matchEyes(s1, s2) {',
+    '  const [v1,v2] = await embed([s1,s2]);',
+    '  return cosine(v1, v2); }',
+    '✓ точность: 94.2%  🔥',
+  ],
+  deploy:[
+    '$ npm run build',
+    '✓ compiled 847 modules in 12.4s',
+    '$ railway up --detach',
+    '● Uploading project...',
+    '● Building docker image...',
+    '● Step 1/4: FROM node:20-alpine',
+    '● Step 3/4: RUN npm ci --prod',
+    '✓ Image built in 47s',
+    '● Health check: GET /health',
+    '✓ 200 OK',
+    '🚀 https://eyes.up.railway.app',
+    'All systems operational ✅',
+  ],
+  claude:[
+    '> как реализовать слияние стримов?',
+    'claude > вот архитектура:',
+    'WebRTC peer → signaling server',
+    '  ↓ AI анализ кадра (30fps)',
+    '  ↓ embedding → cosine sim',
+    '  ↓ match score → notify',
+    '> накоди signaling',
+    "io.on('connect', socket => {",
+    "  socket.on('offer', ({to,sdp}) =>",
+    "    io.to(to).emit('offer', sdp))",
+    '})',
+    '✓ работает, ping 12ms',
+  ],
+  hackathon:[
+    '[лёша] ребята у нас 4 часа',
+    '[дима] я делаю UI',
+    '$ git pull origin main',
+    '[катя] > claude помоги с мэтчингом',
+    'claude > держи endpoint:',
+    "app.post('/match', matchHandler)",
+    '✓ compiled. 0 errors',
+    '[лёша] запушил, смотрите PR',
+    '$ git merge feature/matching',
+    '✓ merged. 0 conflicts',
+    '[катя] РАБОТАЕТ!!! 🔥',
+    '[все] ДЕПЛОИМ!!! 🚀',
+  ],
+};
+
+function mkParticle(type, params={}) {
+  if (type==='warm') return {
+    x:.2+Math.random()*.6, y:.55+Math.random()*.45,
+    vx:(Math.random()-.5)*.0015, vy:-(0.001+Math.random()*.003),
+    size:.4+Math.random()*2.2, life:Math.random(),
+    maxLife:.4+Math.random()*.6, hue:15+Math.random()*45,
+  };
+  return {
+    x:Math.random(), y:Math.random(),
+    vx:(Math.random()-.5)*.0008+(params.wind||0),
+    vy:-(0.00015+Math.random()*(params.vy||0.00045)),
+    size:(params.minSize||.5)+Math.random()*(params.maxSize||1.8),
+    opacity:.25+Math.random()*.65,
+  };
+}
+
+function initAnim(id, type, params={}) {
+  const s = CS[id]; s.type = type; s.params = params; s.t = 0;
+  const cv = document.getElementById(id+'-canvas');
+  if (cv) { cv.width = cv.parentElement.offsetWidth||400; cv.height = cv.parentElement.offsetHeight||240; }
+  if (type==='terminal') { s.lines=[...(TERM[params.topic]||TERM.vibe)]; s.shown=[]; s.lineIdx=0; s.charIdx=0; s.nextChar=0; }
+  if (type==='particles') s.particles = Array.from({length:params.count||50}, ()=>mkParticle('particle',params));
+  if (type==='warm')      s.particles = Array.from({length:42}, ()=>mkParticle('warm',params));
+  if (type==='motion')    s.lines     = Array.from({length:28}, ()=>({x:Math.random(),y:.2+Math.random()*.8,len:.07+Math.random()*.28,speed:(params.speed||.004)+Math.random()*.005,opacity:.12+Math.random()*.5}));
+  if (type==='urban')     s.streaks   = Array.from({length:20}, (_,i)=>({x:Math.random(),y:Math.random(),height:.04+Math.random()*.2,speed:.0007+Math.random()*.0018,hue:[25,0,210,270][i%4],opacity:.2+Math.random()*.5,width:.4+Math.random()*1.2}));
+  if (type==='ocean')     s.waves     = Array.from({length:5}, (_,i)=>({phase:i*Math.PI*.4,amp:.025+i*.012,freq:.9+i*.3,speed:.22+i*.07,opacity:.12+(4-i)*.08}));
+}
+
+function rTerminal(ctx,w,h,s) {
+  ctx.fillStyle='#000811'; ctx.fillRect(0,0,w,h);
+  for(let y=0;y<h;y+=3){ctx.fillStyle='rgba(0,0,0,.1)';ctx.fillRect(0,y,w,1);}
+  if(s.lineIdx<s.lines.length){
+    s.nextChar--;
+    if(s.nextChar<=0){const ln=s.lines[s.lineIdx];if(s.charIdx<ln.length){s.charIdx++;s.nextChar=Math.random()>.85?5:2;}else{s.shown.push(ln);s.lineIdx++;s.charIdx=0;s.nextChar=20;if(s.shown.length>9)s.shown.shift();}}
+  }else{s.lineIdx=0;s.shown=[];s.charIdx=0;}
+  const fs=Math.max(10,Math.round(w*.032));
+  ctx.font=fs+"px 'SF Mono','Fira Code',Consolas,monospace";
+  const lh=fs*1.55,sx=w*.05,sy=h*.1;
+  s.shown.forEach((ln,i)=>{
+    const a=.3+(i/Math.max(s.shown.length-1,1))*.7;
+    ctx.fillStyle=ln.startsWith('✓')||ln.startsWith('🚀')?`rgba(16,185,129,${a})`:ln.startsWith('✗')||ln.includes('ERROR')?`rgba(239,68,68,${a})`:ln.startsWith('>')||ln.startsWith('claude')?`rgba(0,242,254,${a})`:ln.startsWith('[')?`rgba(167,139,250,${a})`:`rgba(148,163,184,${a})`;
+    ctx.fillText(ln.slice(0,Math.floor(w/(fs*.58))),sx,sy+i*lh);
+  });
+  if(s.lineIdx<s.lines.length){
+    const partial=s.lines[s.lineIdx].slice(0,s.charIdx);
+    ctx.fillStyle=s.lines[s.lineIdx].startsWith('>')||s.lines[s.lineIdx].startsWith('claude')?'#00f2fe':s.lines[s.lineIdx].startsWith('[')? '#a78bfa':'#e2e8f0';
+    ctx.fillText(partial,sx,sy+s.shown.length*lh);
+    if(Math.floor(s.t*2)%2===0){const tw=ctx.measureText(partial).width;ctx.fillStyle='#00f2fe';ctx.fillRect(sx+tw+2,sy+s.shown.length*lh-fs*.85,2,fs*.9);}
+  }
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.2,w/2,h/2,h*.85);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(0,0,0,.75)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+function rParticles(ctx,w,h,s) {
+  const p=s.params;
+  const bg=ctx.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,p.topColor||'#030810');bg.addColorStop(1,p.botColor||'#060d14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  if(p.horizon){const hg=ctx.createLinearGradient(0,h*.38,0,h*.65);hg.addColorStop(0,p.horizon);hg.addColorStop(1,'transparent');ctx.fillStyle=hg;ctx.fillRect(0,h*.38,w,h*.27);}
+  s.particles.forEach(pt=>{
+    pt.x+=pt.vx;pt.y+=pt.vy;
+    if(pt.y<-.02){pt.y=1.02;pt.x=Math.random();}
+    if(pt.x<-.05||pt.x>1.05)pt.x=Math.random();
+    ctx.beginPath();ctx.arc(pt.x*w,pt.y*h,pt.size,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.pColor||'255,255,255'},${pt.opacity})`;ctx.fill();
+  });
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.15,w/2,h/2,h*.9);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(0,0,0,.82)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+function rWarm(ctx,w,h,s) {
+  const p=s.params;
+  const bg=ctx.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,p.topColor||'#0c0604');bg.addColorStop(1,p.botColor||'#1a0a03');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  const gx=ctx.createRadialGradient(w*.5,h*.65,0,w*.5,h*.65,h*.55);
+  gx.addColorStop(0,'rgba(249,115,22,.2)');gx.addColorStop(1,'transparent');
+  ctx.fillStyle=gx;ctx.fillRect(0,0,w,h);
+  s.particles.forEach(pt=>{
+    pt.x+=pt.vx+(Math.random()-.5)*.001;pt.y+=pt.vy;pt.life+=.013;
+    if(pt.life>pt.maxLife)Object.assign(pt,mkParticle('warm',p));
+    const pct=pt.life/pt.maxLife,a=(1-Math.abs(pct*2-1))*.85;
+    ctx.beginPath();ctx.arc(pt.x*w,pt.y*h,pt.size*(1-pct*.4),0,Math.PI*2);
+    ctx.fillStyle=`hsla(${pt.hue},90%,62%,${a})`;ctx.fill();
+  });
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.1,w/2,h/2,h*.9);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(0,0,0,.88)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+function rMotion(ctx,w,h,s) {
+  const p=s.params;
+  ctx.fillStyle=p.bg||'#050507';ctx.fillRect(0,0,w,h);
+  const ang=((p.angle||-28)*Math.PI)/180;
+  s.lines.forEach(ln=>{
+    ln.x+=Math.cos(ang)*ln.speed;ln.y+=Math.sin(ang)*ln.speed;
+    if(ln.x>1.4||ln.x<-.4||ln.y>1.4||ln.y<-.4){ln.x=Math.random();ln.y=.3+Math.random()*.9;}
+    ctx.save();ctx.globalAlpha=ln.opacity;
+    ctx.strokeStyle=p.color||'#e2e8f0';ctx.lineWidth=.7+Math.random()*.5;
+    ctx.beginPath();ctx.moveTo(ln.x*w,ln.y*h);ctx.lineTo((ln.x+Math.cos(ang)*ln.len)*w,(ln.y+Math.sin(ang)*ln.len)*h);
+    ctx.stroke();ctx.restore();
+  });
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.1,w/2,h/2,h*.9);
+  vig.addColorStop(0,'rgba(0,0,0,.1)');vig.addColorStop(1,'rgba(0,0,0,.92)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+function rUrban(ctx,w,h,s) {
+  ctx.fillStyle='#010306';ctx.fillRect(0,0,w,h);
+  for(let i=0;i<25;i++){const bx=(i*173+s.t*9)%w,by=(i*113)%h,br=2+(i%5);const bg=ctx.createRadialGradient(bx,by,0,bx,by,br*4);bg.addColorStop(0,`hsla(${[25,0,210,270][i%4]},90%,60%,.45)`);bg.addColorStop(1,'transparent');ctx.fillStyle=bg;ctx.fillRect(bx-br*4,by-br*4,br*8,br*8);}
+  s.streaks.forEach(st=>{
+    st.y-=st.speed;if(st.y<-st.height)st.y=1+Math.random()*.1;
+    const g=ctx.createLinearGradient(st.x*w,st.y*h,st.x*w,(st.y+st.height)*h);
+    g.addColorStop(0,'transparent');g.addColorStop(.4,`hsl(${st.hue},90%,60%)`);g.addColorStop(1,'transparent');
+    ctx.globalAlpha=st.opacity;ctx.fillStyle=g;ctx.fillRect(st.x*w-st.width,st.y*h,st.width*2,st.height*h);ctx.globalAlpha=1;
+  });
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.1,w/2,h/2,h*.9);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(0,0,0,.88)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+function rOcean(ctx,w,h,s) {
+  const p=s.params;
+  const bg=ctx.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,p.sky||'#01091a');bg.addColorStop(.52,p.skyBot||'#021422');bg.addColorStop(1,p.water||'#020b14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  s.waves.forEach(wave=>{
+    ctx.beginPath();ctx.moveTo(0,h*.7);
+    for(let x=0;x<=w;x+=3){const y=h*.56+Math.sin(x/w*Math.PI*2*wave.freq+s.t*wave.speed+wave.phase)*h*wave.amp;ctx.lineTo(x,y);}
+    ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
+    ctx.fillStyle=`rgba(${p.waveRgb||'8,38,74'},${wave.opacity})`;ctx.fill();
+  });
+  const vig=ctx.createRadialGradient(w/2,h/2,h*.1,w/2,h/2,h*.9);
+  vig.addColorStop(0,'transparent');vig.addColorStop(1,'rgba(0,0,0,.8)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,w,h);
+}
+
+function renderCanvas(id) {
+  const cv=document.getElementById(id+'-canvas');
+  if(!cv||!cv.width||!cv.height)return;
+  const s=CS[id];s.t=(s.t||0)+.016;
+  const ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
+  switch(s.type){
+    case 'terminal':  rTerminal(ctx,w,h,s); break;
+    case 'particles': rParticles(ctx,w,h,s); break;
+    case 'warm':      rWarm(ctx,w,h,s); break;
+    case 'motion':    rMotion(ctx,w,h,s); break;
+    case 'urban':     rUrban(ctx,w,h,s); break;
+    case 'ocean':     rOcean(ctx,w,h,s); break;
+  }
+}
+
+function loop() { renderCanvas('cam1'); renderCanvas('cam2'); requestAnimationFrame(loop); }
+
+/* ── ANIMATION PRESETS ── */
+const T = {
+  coffee1: {type:'particles',topColor:'#0d0805',botColor:'#1a0e06',pColor:'255,195,100',minSize:.4,maxSize:1.6,count:38,vy:.00025},
+  coffee2: {type:'particles',topColor:'#060d18',botColor:'#091528',pColor:'180,210,255',minSize:.4,maxSize:1.5,count:38},
+  skate:   {type:'motion',angle:-30,bg:'#050505',color:'#e2e8f0',speed:.006},
+  bike:    {type:'motion',angle:-22,bg:'#040610',color:'#a5f3fc',speed:.0055},
+  mtn:     {type:'particles',topColor:'#020a18',botColor:'#031020',pColor:'255,255,255',minSize:.3,maxSize:1.2,count:65,vy:.0002,horizon:'rgba(50,100,180,.15)'},
+  forest:  {type:'particles',topColor:'#050b04',botColor:'#0a1208',pColor:'200,240,160',minSize:.3,maxSize:1.3,count:55,wind:.00015},
+  tv:      {type:'terminal',topic:'vibe'},
+  td:      {type:'terminal',topic:'deploy'},
+  tc:      {type:'terminal',topic:'claude'},
+  th:      {type:'terminal',topic:'hackathon'},
+  yoga:    {type:'particles',topColor:'#0c0810',botColor:'#120a14',pColor:'255,180,220',minSize:.4,maxSize:1.2,count:35},
+  urban:   {type:'urban'},
+  warm:    {type:'warm'},
+  sea:     {type:'ocean',sky:'#0e0804',skyBot:'#1c1204',water:'#0a0805',waveRgb:'60,30,10'},
+  sea2:    {type:'ocean',sky:'#0a0b12',skyBot:'#0c1020',water:'#060810',waveRgb:'10,20,50'},
+  rain:    {type:'motion',angle:78,bg:'#040608',color:'#94a3b8',speed:.012},
+  stars:   {type:'particles',topColor:'#000204',botColor:'#010306',pColor:'255,255,255',minSize:.2,maxSize:1,count:90,vy:.00008},
+  fire:    {type:'warm',topColor:'#0a0402',botColor:'#160804'},
+  camp:    {type:'particles',topColor:'#000206',botColor:'#010310',pColor:'255,255,255',minSize:.3,maxSize:1,count:80,vy:.00012},
+};
+
+/* ── DEMO CONTEXTS ── */
+const CONTEXTS = [
+  {label:'Кофе / Работа', ctx1:'Кофе и чтение · Кафе', ctx2:'Кофе и работа · Ноутбук', u1:'@арина_пишет · Питер', u2:'@leo_writes · Берлин', a1:T.coffee1, a2:T.coffee2, tags:[{t:'Контекст: Кофе'},{t:'✓ Напиток',m:true},{t:'Атмосфера: Концентрация'},{t:'✓ Работа/Чтение',m:true},{t:'Локация: Закрытое',}], pct:'91%', v1:'247 зрителей', v2:'189 зрителей'},
+  {label:'Стрит-спорт / Улица', ctx1:'Скейтпарк · Рампа', ctx2:'Велосипед · Городская трасса', u1:'@кирилл_brd · Москва', u2:'@jay_rides · LA', a1:T.skate, a2:T.bike, tags:[{t:'Стрит-спорт'},{t:'✓ Движение/Скорость',m:true},{t:'✓ Улица',m:true},{t:'Скейтборд (99%)'},{t:'Адреналин'}], pct:'87%', v1:'1 204 зрителя', v2:'873 зрителя'},
+  {label:'Природа / Хайкинг', ctx1:'Горный маршрут · Утро', ctx2:'Лесная тропа · Закат', u1:'@настя_горы · Екб', u2:'@mia_trails · Ванкувер', a1:T.mtn, a2:T.forest, tags:[{t:'Природа'},{t:'✓ Хайкинг',m:true},{t:'✓ Открытое пространство',m:true},{t:'Атмосфера: Спокойствие'},{t:'Горная зона'}], pct:'83%', v1:'92 зрителя', v2:'156 зрителей'},
+  {label:'ВАЙБКОДИНГ / Ночная сессия', ctx1:'VS Code · Тёмная тема · 02:40', ctx2:'Cursor AI · Музыка в ушах', u1:'@dev_nikita · Москва', u2:'@xcode_kyoto · Токио', a1:T.tv, a2:T.tc, tags:[{t:'ВАЙБКОДИНГ'},{t:'✓ IDE открыт',m:true},{t:'✓ Ночной режим',m:true},{t:'Объект: Монитор/Код'},{t:'Flow State'}], pct:'96%', v1:'2 841 зритель', v2:'3 102 зрителя'},
+  {label:'ДЕПЛОЙ / Дедлайн горит', ctx1:'GitHub · PR открыт · 23 файла', ctx2:'Deploy pipeline · 3 failed tests', u1:'@ivan_debug · Москва', u2:'@panic_dan · SF', a1:T.td, a2:T.th, tags:[{t:'ЭКСТРЕННЫЙ ДЕПЛОЙ'},{t:'✓ Стресс-кодинг',m:true},{t:'Красные ошибки в логах'},{t:'✓ Ночной дедлайн',m:true},{t:'ЧСС: Повышен'}], pct:'99%', v1:'4 512 зрителей', v2:'5 001 зритель'},
+  {label:'Дождь / Окно', ctx1:'Лондон · Дождь · Кофе у окна', ctx2:'Прага · Дождь · Книга', u1:'@lex_window · ЛДН', u2:'@jana_reads · ПРГ', a1:T.rain, a2:T.coffee1, tags:[{t:'Дождь'},{t:'✓ Осадки',m:true},{t:'✓ Уют / Внутри',m:true},{t:'Настроение: Меланхолия'},{t:'Горячий напиток'}], pct:'88%', v1:'378 зрителей', v2:'201 зритель'},
+  {label:'Ночное небо / Млечный путь', ctx1:'Алтай · Костёр · 02:00', ctx2:'Атакама · Телескоп · 02:00', u1:'@sergei_camp · АЛТ', u2:'@astro_lena · АТК', a1:T.camp, a2:T.stars, tags:[{t:'Ночное небо'},{t:'✓ Млечный путь',m:true},{t:'✓ Тишина / Открытое',m:true},{t:'Температура: Холодно'},{t:'Астрономия'}], pct:'92%', v1:'143 зрителя', v2:'89 зрителей'},
+  {label:'Серфинг / Волны', ctx1:'Бали · Серфинг · 14:20', ctx2:'Гавайи · Pipeline · 08:30', u1:'@surf_max · БЛИ', u2:'@kai_waves · ГВЙ', a1:T.sea, a2:T.sea2, tags:[{t:'Серфинг'},{t:'✓ Волны',m:true},{t:'✓ Открытая вода',m:true},{t:'Скорость: Высокая'},{t:'Атмосфера: Свобода'}], pct:'94%', v1:'891 зрителей', v2:'1 230 зрителей'},
+];
+
+let ctxIdx = 0;
+
+function applyContext(idx, animate=true) {
+  const c = CONTEXTS[idx % CONTEXTS.length];
+  document.getElementById('u1-name').textContent = c.u1;
+  document.getElementById('u2-name').textContent = c.u2;
+  document.getElementById('ctx1-label').textContent = c.ctx1;
+  document.getElementById('ctx2-label').textContent = c.ctx2;
+  document.getElementById('v1-count').textContent = c.v1;
+  document.getElementById('v2-count').textContent = c.v2;
+  document.getElementById('contextLbl').textContent = `${(idx%CONTEXTS.length)+1} / 40  ·  ${c.label}`;
+
+  const score = document.getElementById('matchPct');
+  if (animate) {
+    score.style.opacity = '0'; score.style.transform = 'scale(.85)';
+    setTimeout(() => {
+      score.textContent = c.pct;
+      score.style.transition = 'opacity .3s, transform .3s';
+      score.style.opacity = '1'; score.style.transform = 'scale(1)';
+    }, 150);
+  } else {
+    score.textContent = c.pct;
+  }
+
+  const tagsEl = document.getElementById('aiTags');
+  tagsEl.innerHTML = c.tags.map(tag =>
+    `<span class="ai-tag${tag.m?' match':''}">${tag.t}</span>`
+  ).join('');
+
+  initAnim('cam1', c.a1.type, c.a1);
+  initAnim('cam2', c.a2.type, c.a2);
+}
+
+function nextContext() {
+  ctxIdx++;
+  applyContext(ctxIdx);
+}
+
+function resetDemo() {
+  ctxIdx = 0;
+  applyContext(0, false);
+}
+
+/* ── BOOT ── */
+applyContext(0, false);
+requestAnimationFrame(loop);
+
+/* ── RESIZE ── */
+window.addEventListener('resize', () => {
+  ['cam1','cam2'].forEach(id => {
+    const cv = document.getElementById(id+'-canvas');
+    if (!cv) return;
+    cv.width = cv.parentElement.offsetWidth || 400;
+    cv.height = cv.parentElement.offsetHeight || 240;
+  });
+});
+</script>
+</body>
+</html>
