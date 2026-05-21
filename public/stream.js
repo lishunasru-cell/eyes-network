@@ -146,18 +146,19 @@ function handlePeerLeft() {
   const rv = $('remote-video');
   rv.srcObject = null; rv.style.display = 'none';
   $('remote-wait').style.display = '';
-  show('s-peer-left');
+  show('s-feedback');
 }
 
 function leaveRoom() {
   socket.emit('leave');
   if (pc) { pc.close(); pc = null; }
-  show('s-setup');
+  show('s-feedback');
 }
 
-function searchAgain() {
-  show('s-setup');
-}
+function searchAgain() { show('s-setup'); }
+function showHelped()   { show('s-helped'); }
+function showNotHelped(){ show('s-not-helped'); }
+function showFuture()   { show('s-future'); }
 
 // ── TAGS ──
 

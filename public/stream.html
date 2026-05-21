@@ -178,18 +178,62 @@
   }
   .leave-btn:hover { border-color: var(--red); color: var(--red); }
 
-  /* ── PEER LEFT ── */
-  #s-peer-left { flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-  .pl-icon { font-size: 36px; }
-  .pl-title { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
-  .pl-sub { font-size: 13px; color: var(--muted); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-  .pl-again {
-    padding: 11px 24px; background: var(--blue); color: #fff;
-    border: none; border-radius: 4px; font-family: inherit;
-    font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-    cursor: pointer; transition: all .2s;
+  /* ── FEEDBACK SCREENS ── */
+  #s-feedback, #s-helped, #s-future, #s-not-helped {
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 24px; text-align: center;
   }
-  .pl-again:hover { background: #2563eb; }
+  .fb-eyebrow {
+    font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 28px; opacity: .7;
+  }
+  .fb-title {
+    font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 32px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .fb-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
+  .fb-btn {
+    padding: 16px 20px; border-radius: 6px; font-family: inherit;
+    font-size: 14px; font-weight: 600; letter-spacing: .04em;
+    cursor: pointer; transition: all .2s; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none;
+  }
+  .fb-btn.helped {
+    background: rgba(16,185,129,.12); color: var(--green);
+    border: 1px solid rgba(16,185,129,.3);
+  }
+  .fb-btn.helped:hover { background: rgba(16,185,129,.2); border-color: var(--green); }
+  .fb-btn.not-helped {
+    background: rgba(255,255,255,.04); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .fb-btn.not-helped:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+  .fb-btn.donate {
+    background: var(--blue); color: #fff;
+    box-shadow: 0 0 20px rgba(59,130,246,.3);
+  }
+  .fb-btn.donate:hover { background: #2563eb; }
+  .fb-btn.later {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); font-size: 13px; font-weight: 400;
+    line-height: 1.5; padding: 14px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .fb-btn.later:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+  .fb-msg {
+    font-size: 15px; line-height: 1.85; color: var(--text); max-width: 360px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 300;
+    margin-bottom: 32px;
+  }
+  .fb-msg em { font-style: normal; color: var(--blue); }
+  .fb-again {
+    padding: 11px 24px; background: transparent; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 4px; font-family: inherit;
+    font-size: 11px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+    transition: all .2s; margin-top: 8px;
+  }
+  .fb-again:hover { color: var(--text); border-color: var(--blue); }
 
   /* ── KEYFRAMES ── */
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -281,12 +325,44 @@
   </div>
 </div>
 
-<!-- ── PEER LEFT ── -->
-<div id="s-peer-left" data-screen>
-  <div class="pl-icon">👁</div>
-  <div class="pl-title">Взгляд отключился</div>
-  <p class="pl-sub">Второй пользователь вышел из сети</p>
-  <button class="pl-again" onclick="searchAgain()">→ Найти другой взгляд</button>
+<!-- ── FEEDBACK ── -->
+<div id="s-feedback" data-screen>
+  <div class="fb-eyebrow">Сессия завершена</div>
+  <div class="fb-title">Этот взгляд тебе...</div>
+  <div class="fb-btns">
+    <button class="fb-btn helped" onclick="showHelped()">✦ &nbsp;Помог</button>
+    <button class="fb-btn not-helped" onclick="showNotHelped()">◌ &nbsp;Не помог</button>
+  </div>
+</div>
+
+<!-- ── HELPED ── -->
+<div id="s-helped" data-screen>
+  <div class="fb-eyebrow">Рад что помогло</div>
+  <div class="fb-title">Как хочешь отблагодарить?</div>
+  <div class="fb-btns">
+    <a class="fb-btn donate" href="https://yoomoney.ru/to/4100119525991752" target="_blank">♥ &nbsp;Задонатить</a>
+    <button class="fb-btn later" onclick="showFuture()">
+      Сейчас не могу ничего заплатить, но могу просто так помочь тебе в будущем за эту твою помощь
+    </button>
+  </div>
+</div>
+
+<!-- ── FUTURE HELP ── -->
+<div id="s-future" data-screen>
+  <div class="fb-msg">
+    Этого уже достаточно.<br><br>
+    <em>Мир держится на таких людях.</em>
+  </div>
+  <button class="fb-again" onclick="searchAgain()">→ Найти ещё один взгляд</button>
+</div>
+
+<!-- ── NOT HELPED ── -->
+<div id="s-not-helped" data-screen>
+  <div class="fb-msg">
+    Человек старался. Но жизнь так устроена, что не всегда уровень подготовки и образованности соответствует поставленным задачам.<br><br>
+    Но само желание помочь другому человеку хоть чем-то — это <em>великая ценность</em>. И именно эта ценность изменит мир.
+  </div>
+  <button class="fb-again" onclick="searchAgain()">→ Найти другой взгляд</button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
