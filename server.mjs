@@ -11,6 +11,11 @@ const io = new Server(http);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/stream', (_, res) => res.sendFile(path.join(__dirname, 'public', 'stream.html')));
+app.get('/qr', (req, res) => {
+  const base = `${req.protocol}://${req.get('host')}`;
+  const url = `${base}/stream`;
+  res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ГЛАЗА — QR</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#03050c;color:#e2e8f0;font-family:'SF Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}.logo{font-size:13px;letter-spacing:.2em;color:#3b82f6}img{border:1px solid rgba(59,130,246,.2);border-radius:8px;background:#fff;padding:12px}p{font-size:12px;color:#64748b;letter-spacing:.06em}a{color:#3b82f6;text-decoration:none}</style></head><body><div class="logo">● ГЛАЗА</div><img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(url)}" width="280" height="280"><p>Сканируй → откроется стрим</p><a href="/stream">${url}</a></body></html>`);
+});
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 // pool: Map<socketId, { context, joinedAt }>
