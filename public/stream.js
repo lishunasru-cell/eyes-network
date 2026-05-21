@@ -32,7 +32,7 @@ async function startCamera(facing) {
   try {
     localStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-      audio: false,
+      audio: true,
     });
     $('local-setup').srcObject = localStream;
     $('local-waiting').srcObject = localStream;
@@ -107,7 +107,7 @@ socket.on('matched', async ({ role, roomId: rid, peerContext, matchPct, commonTa
   };
 
   if (role === 'caller') {
-    const offer = await pc.createOffer({ offerToReceiveVideo: true });
+    const offer = await pc.createOffer({ offerToReceiveVideo: true, offerToReceiveAudio: true });
     await pc.setLocalDescription(offer);
     socket.emit('signal', { roomId, data: { offer } });
   }
